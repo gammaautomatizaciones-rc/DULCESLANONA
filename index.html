@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dulces La Nona</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="responsive.css" />
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
+            <img src="assets/logo.png" class="logo" alt="Dulces La Nona Logo" />
+
+            <nav>
+                <ul>
+                    <li><a href="#menu">Menú</a></li>
+                    <li><a href="#about">Nosotros</a></li>
+                    <li><a href="#contact">Contacto</a></li>
+                </ul>
+            </nav>
+
+            <!-- CARRITO -->
+            <div class="cart-container">
+                <button class="cart-btn" onclick="toggleCart()">
+                    <i data-lucide="shopping-cart"></i>
+                    <span id="cart-count" class="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <img src="assets/logo.png" class="hero-logo" alt="Dulces La Nona Logo" />
+            <h1>Dulces La Nona</h1>
+            <p>Delicias caseras con el sabor de la abuela. Budines artesanales que te transportan a la infancia.</p>
+            <button class="btn-primary" onclick="scrollToMenu()">Ver menú</button>
+        </div>
+    </section>
+
+    <!-- MENÚ -->
+    <section id="menu" class="menu-section">
+        <h2>Menú</h2>
+
+        <!-- FILTROS -->
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">Todo</button>
+            <button class="filter-btn" data-filter="Budín">Budín</button>
+            <button class="filter-btn" data-filter="Tartas">Tartas</button>
+        </div>
+
+        <!-- CONTENEDOR DE PRODUCTOS (JS lo llena) -->
+        <div id="menu-container" class="menu-grid"></div>
+
+        <!-- Loader -->
+        <div id="loader" class="loader hidden">Cargando...</div>
+    </section>
+
+    <!-- SOBRE NOSOTROS -->
+    <section id="about" class="about-section">
+        <h2>Sobre Nosotros</h2>
+        <p>
+            Somos apasionados por los dulces tradicionales. Cada budín es preparado con amor,
+            usando recetas familiares que pasan de generación en generación. ¡Vení a probar el sabor de casa!
+        </p>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contact" class="contact-section">
+        <h2>Ubicación</h2>
+        <p class="contact-note">Armá tu carrito con todos los productos que necesitas para que podamos enviarte el detalle completo de tu pedido.</p>
+
+        <div class="contact-ctas">
+            <a href="https://www.google.com/maps?q=-24.2458398,-64.882666&z=17&hl=es" class="btn-secondary" target="_blank">
+                <i data-lucide="map-pin"></i> Ver ubicación
+            </a>
+        </div>
+    </section>
+
+    <!-- MODAL DE INFORMACIÓN INICIAL -->
+    <div id="info-modal" class="modal hidden">
+        <div class="modal-content info-modal-content">
+            <div class="modal-header">
+                <h3>📝 Información Importante</h3>
+                <button class="modal-close" onclick="closeInfoModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-content">
+                    <p><strong>Tomamos pedidos con un mínimo de 3 días de anticipación y un máximo de hasta 3 semanas únicamente por WhatsApp (ni llamadas ni mensajes por Instagram).</strong></p>
+
+                    <p><strong>El pedido NO será agendado hasta recibir el comprobante de pago de la seña, que equivale al 50% del total.</strong></p>
+
+                    <p>Por consultas o presupuestos nos pueden escribir por WhatsApp.<br>
+                    Los horarios de atención están publicados en Instagram.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="closeInfoModal()">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PERSONALIZACIÓN PRODUCTO -->
+    <div id="product-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Personalizar Budín</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="bases-section" class="customization-section">
+                    <h4>Elige tu base</h4>
+                    <div id="bases-container" class="options-grid"></div>
+                </div>
+                <div id="agregados-section" class="customization-section">
+                    <h4>Agregados (opcional)</h4>
+                    <div id="agregados-container" class="options-grid"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button id="add-to-cart-btn" class="btn-primary" onclick="addToCart()">Agregar al carrito</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CARRITO -->
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content cart-modal-content">
+            <div class="modal-header">
+                <h3>Tu pedido</h3>
+                <button class="modal-close" onclick="toggleCart()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="cart-items" class="cart-items">
+                    <!-- Items del carrito se agregan aquí -->
+                </div>
+                <div id="cart-empty" class="cart-empty">
+                    <p>Tu carrito está vacío</p>
+                    <p>Agrega algunos productos deliciosos</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="toggleCart()">Seguir comprando</button>
+                <button id="checkout-btn" class="btn-primary" onclick="showDateSelector()" disabled>
+                    Seleccionar fecha de entrega
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SELECCIÓN DE FECHA -->
+    <div id="date-modal" class="modal hidden">
+        <div class="modal-content date-modal-content">
+            <div class="modal-header">
+                <h3>📅 Elegir fecha de entrega</h3>
+                <button class="modal-close" onclick="closeDateModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="date-selector-info">
+                    <p><strong>📋 Información importante:</strong></p>
+                    <ul>
+                        <li>• Mínimo 3 días de anticipación</li>
+                        <li>• Máximo hasta 3 semanas</li>
+                        <li>• Solo fechas hábiles (lunes a sábado)</li>
+                    </ul>
+                </div>
+                <div class="date-input-container">
+                    <label for="delivery-date">Selecciona la fecha de entrega:</label>
+                    <input type="date" id="delivery-date" class="date-input" />
+                    <p class="date-note">Las fechas no disponibles aparecen deshabilitadas en el calendario.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeDateModal()">Volver al carrito</button>
+                <button id="confirm-date-btn" class="btn-primary" onclick="confirmOrder()" disabled>
+                    Confirmar pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2025 Dulces La Nona — Todos los derechos reservados.</p>
+        <p>Desarrollado con 💛 por GAMMA.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="data.js"></script>
+    <script src="ui.js"></script>
+    <script src="main.js"></script>
+    <script> lucide.createIcons(); </script>
+</body>
+</html>
